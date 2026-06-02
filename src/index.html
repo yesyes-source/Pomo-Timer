@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+<body>
+  <!-- Drag region to support window dragging since native titlebar is hidden -->
+  <div class="drag-bar" data-tauri-drag-region></div>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="nav-group">
+        <button class="nav-item active" data-target="timer-view">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Timer
+        </button>
+        <button class="nav-item" data-target="stats-view">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          Statistiche
+        </button>
+        <button class="nav-item" data-target="settings-view">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Opzioni
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+      
+      <!-- 1. TIMER VIEW -->
+      <section id="timer-view" class="view-panel active">
+        <div class="session-label-container">
+          <span id="session-type-label" class="session-badge">Lavoro</span>
+        </div>
+        
+        <div class="timer-outer">
+          <!-- SVG Progress Circle -->
+          <svg class="progress-ring" width="220" height="220">
+            <circle class="progress-ring-bg" stroke="rgba(255, 255, 255, 0.05)" stroke-width="6" fill="transparent" r="98" cx="110" cy="110"></circle>
+            <circle id="progress-bar" class="progress-ring-bar" stroke="var(--accent-color)" stroke-width="6" fill="transparent" r="98" cx="110" cy="110"></circle>
+          </svg>
+          <div class="timer-inner">
+            <span id="timer-display">25:00</span>
+          </div>
+        </div>
+
+        <div class="timer-controls">
+          <button id="btn-reset" class="control-btn btn-secondary">Ripristina</button>
+          <button id="btn-start" class="control-btn btn-primary">Avvia</button>
+        </div>
+      </section>
+
+      <!-- 2. STATS VIEW -->
+      <section id="stats-view" class="view-panel">
+        <h2 class="view-title">Statistiche</h2>
+        
+        <div class="stats-summary-grid">
+          <div class="summary-card">
+            <span class="summary-value" id="stats-today-count">0</span>
+            <span class="summary-label">Pomodoro Oggi</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-value" id="stats-today-time">0m</span>
+            <span class="summary-label">Tempo Oggi</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <span class="card-title">Completati questa settimana</span>
+          <div class="chart-container" id="weekly-chart">
+            <!-- Rendered dynamically by JS -->
+          </div>
+        </div>
+
+        <div class="stats-footer">
+          <div class="footer-row">
+            <span>Totale questa settimana:</span>
+            <strong id="stats-week-time">0h 0m</strong>
+          </div>
+          <div class="footer-row">
+            <span>Pomodoro settimanali:</span>
+            <strong id="stats-week-count">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. SETTINGS VIEW -->
+      <section id="settings-view" class="view-panel">
+        <h2 class="view-title">Opzioni</h2>
+        
+        <div class="settings-group">
+          <span class="group-title">Durata Sessioni (minuti)</span>
+          
+          <div class="setting-row">
+            <label for="input-work">Lavoro</label>
+            <input type="number" id="input-work" min="1" max="120" value="25" />
+          </div>
+          
+          <div class="setting-row">
+            <label for="input-short">Pausa breve</label>
+            <input type="number" id="input-short" min="1" max="60" value="5" />
+          </div>
+          
+          <div class="setting-row">
+            <label for="input-long">Pausa lunga</label>
+            <input type="number" id="input-long" min="1" max="60" value="15" />
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <span class="group-title">Obiettivo</span>
+          <div class="setting-row">
+            <label for="input-target">Target Giornaliero</label>
+            <input type="number" id="input-target" min="1" max="24" value="4" />
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <button id="btn-save-settings" class="save-settings-btn">Salva Impostazioni</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
