@@ -1,25 +1,28 @@
-# Pomodoro Timer — macOS Native Style (Tauri 2)
+# Pomo-Timer — macOS & Windows Desktop App (Tauri 2)
 
-A desktop Pomodoro timer application designed to look and feel native on macOS. Built using **Tauri 2** (HTML/CSS/JS frontend and **Rust** backend).
+A beautiful, lightweight, and distraction-free Pomodoro timer application designed to run natively on both **macOS** and **Windows**. Built using **Tauri 2** (HTML/CSS/JS frontend and **Rust** backend).
 
 ## Features
 
-*   **macOS Native UI**: Dark mode by default, SF Pro system fonts, and transparent titlebar support (retains native traffic light buttons).
+*   **Native UI Design**: Elegant dark-themed interface, using system-matching fonts and titlebar support.
 *   **Customizable Sessions**: 25 min work, 5 min short break, and 15 min long break sessions, fully customizable via the Options tab.
-*   **Menu Bar Icon (System Tray)**: Left-clicking the menu bar icon toggles window visibility (hides it when visible, focuses/shows it when hidden).
-*   **Native Notifications & Sounds**: Triggers native macOS notifications via AppleScript and plays the native system alert sound (`Glass.aiff`) when a timer ends.
+*   **System Tray Icon (Menu Bar)**: Closes/toggles window visibility to keep it out of your way, accessible with a click in the menu bar (macOS) or system tray (Windows).
+*   **Cross-Platform Native Notifications & Sounds**:
+    *   **macOS**: Triggers macOS notifications via AppleScript and plays native system alert sound (`Glass.aiff`).
+    *   **Windows**: Triggers native notification windows and plays native System exclamation alerts.
 *   **Persistent Statistics**: Tracks completed Pomodoros per day, calculates weekly focus hours, and draws a clean weekly bar chart, all persisted locally using Tauri's built-in store plugin.
+*   **Automated Cloud Releases**: Pre-compiled binaries for Windows (`.msi` / `.exe`) and macOS (`.dmg`) are automatically generated and uploaded to GitHub Releases using GitHub Actions.
 
 ## Project Structure
 
 *   `src/`: Frontend interface (Vanilla HTML, CSS, and JavaScript).
-*   `src-tauri/`: Rust backend (Window configurations, tray icon setup, and native OS command wrappers).
+*   `src-tauri/`: Rust backend (Window configurations, tray icon setup, and conditional compilation for native OS commands).
 
 ## Development Prerequisites
 
 Ensure you have installed:
 *   [Node.js](https://nodejs.org/) (version 16+ recommended)
-*   [Rust & Cargo](https://www.rust-lang.org/) (if not in your PATH, run `. "$HOME/.cargo/env"`)
+*   [Rust & Cargo](https://www.rust-lang.org/)
 
 ## Getting Started
 
@@ -32,7 +35,7 @@ Ensure you have installed:
     npm run tauri dev
     ```
 
-## Build Native App Bundle (`.app` / `.dmg`)
+## Build Native App Bundle
 
 To compile the production release optimized app:
 
@@ -40,8 +43,8 @@ To compile the production release optimized app:
 npm run tauri build
 ```
 
-The compiled standalone `.app` bundle will be generated in:
-`src-tauri/target/release/bundle/macos/pomodoro-timer.app`
+*   On macOS, the compiled standalone `.app` bundle will be generated in `src-tauri/target/release/bundle/macos/`.
+*   On Windows, the compiled standalone `.msi` and `.exe` installers will be generated in `src-tauri/target/release/bundle/msi/` and `/nsis/`.
 
 ## Cleaning Temporary Build Files
 
