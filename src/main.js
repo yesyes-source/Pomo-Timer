@@ -49,7 +49,7 @@ function getDateString(date = new Date()) {
 // Helper: Get the rolling 7 days ending today
 function getWeeklyRange() {
   const days = [];
-  const labels = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = new Date();
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -139,8 +139,8 @@ async function saveSettings() {
     resetTimer();
   }
   
-  // Show standard visual confirmation
-  alert('Impostazioni salvate con successo!');
+  // Visual confirmation
+  alert('Settings saved successfully!');
 }
 
 async function addCompletedSession(type, duration) {
@@ -215,7 +215,7 @@ function updateStats() {
     const bar = document.createElement('div');
     bar.className = 'chart-bar' + (day.isToday ? ' today' : '');
     bar.style.height = `${pct}%`;
-    bar.title = `${count} Pomodoro`;
+    bar.title = `${count} Pomodoros`;
     
     const label = document.createElement('div');
     label.className = 'chart-label';
@@ -236,17 +236,17 @@ function resetTimer() {
   
   if (sessionType === 'work') {
     totalSeconds = settings.work * 60;
-    sessionLabel.textContent = 'Lavoro';
+    sessionLabel.textContent = 'Focus';
     sessionLabel.style.color = 'var(--accent-color)';
     document.documentElement.style.setProperty('--accent-color', '#ff453a');
   } else if (sessionType === 'short') {
     totalSeconds = settings.short * 60;
-    sessionLabel.textContent = 'Pausa Breve';
+    sessionLabel.textContent = 'Short Break';
     sessionLabel.style.color = 'var(--accent-break)';
     document.documentElement.style.setProperty('--accent-color', '#30d158');
   } else {
     totalSeconds = settings.long * 60;
-    sessionLabel.textContent = 'Pausa Lunga';
+    sessionLabel.textContent = 'Long Break';
     sessionLabel.style.color = 'var(--accent-long)';
     document.documentElement.style.setProperty('--accent-color', '#0a84ff');
   }
@@ -254,7 +254,7 @@ function resetTimer() {
   secondsLeft = totalSeconds;
   updateTimerDisplay();
   
-  btnStart.textContent = 'Avvia';
+  btnStart.textContent = 'Start';
   btnStart.className = 'control-btn btn-primary start-state';
 }
 
@@ -273,7 +273,7 @@ function updateTimerDisplay() {
 function toggleTimer() {
   if (timerState === 'idle' || timerState === 'paused') {
     timerState = 'running';
-    btnStart.textContent = 'Pausa';
+    btnStart.textContent = 'Pause';
     btnStart.className = 'control-btn btn-primary';
     
     timerInterval = setInterval(() => {
@@ -289,7 +289,7 @@ function toggleTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
     timerState = 'paused';
-    btnStart.textContent = 'Riprendi';
+    btnStart.textContent = 'Resume';
     btnStart.className = 'control-btn btn-primary start-state';
   }
 }
@@ -308,8 +308,8 @@ async function handleTimerEnd() {
   let completedDuration = Math.round(totalSeconds / 60);
 
   if (sessionType === 'work') {
-    title = 'Sessione Completata!';
-    body = 'Ottimo lavoro! È ora di fare una pausa.';
+    title = 'Session Completed!';
+    body = 'Great job! Time for a short break.';
     
     // Calculate breaks - check how many sessions completed today
     const todayStr = getDateString();
@@ -320,14 +320,14 @@ async function handleTimerEnd() {
     
     if (todaySessionsCount > 0 && todaySessionsCount % 4 === 0) {
       sessionType = 'long';
-      body = 'Ottimo lavoro! Ti sei meritato una pausa lunga.';
+      body = 'Fantastic work! You earned a long break.';
     } else {
       sessionType = 'short';
     }
   } else {
     // Break completed
-    title = 'Pausa Terminata!';
-    body = 'Pronto a ricominciare a concentrarti?';
+    title = 'Break Finished!';
+    body = 'Ready to focus again?';
     sessionType = 'work';
   }
 
